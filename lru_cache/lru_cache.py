@@ -42,13 +42,22 @@ class LRUCache:
     """
     #add to DLL, and to dict
     def set(self, key, value):
-        if(self.length == self.limit):
+        # if key in cache delete node for that key then add new to head
+        if(key in self.cache):
+            self.dll.delete(self.cache[key])
+            new_node = self.dll.add_to_head(value)
+            self.cache[key] = new_node
+
+        elif(self.length == self.limit):
             # delete least recently used entry if full from DLL and dict
-            key_to_delete = self.dll.remove_from_tail() 
+            value_to_delete = self.dll.remove_from_tail() 
+            key_to_delete = list(self.cache.keys())[list(self.cache.values()).index(value_to_delete)]
             del self.cache[key_to_delete]
+            
             # add new node and dict key/value pair for new entry
             new_node = self.dll.add_to_head(value)
             self.cache[key] = new_node
+
         else:
             self.length += 1
             new_node = self.dll.add_to_head(value)
